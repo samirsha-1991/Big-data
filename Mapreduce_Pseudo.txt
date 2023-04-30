@@ -1,0 +1,40 @@
+
+
+//split by | character
+//take the 3rd character which is the year
+//take 1st string and split it by , character to seprate authors. 
+//take each of the authors and conctaenate with year --> primary key
+//reduce the output
+
+
+class Mapper
+	method INITIALIZE
+		H <-- new AssociativeArray
+		method Map(docid a; doc d)
+			for all lines in doc d do
+				// Split the line into words using the pipeline character
+				tokens=split(lines,'|')
+				
+				for all token in tokens do
+					// extract the year
+					year=token[3]
+					
+					//extract the list of authors seprated by ","
+					authors=token[0]
+					
+						//split the authors by "," character
+						for all single_author in authors do
+							t=single_author+year
+							H{t} <-- H{t}+1
+		method Close
+			for all term t in H{t} do
+				emit(term t,count H{t})
+
+Class Reducer
+	method Reduce(term t; counts [c1; c2; : : :])
+	sum 0
+	for all count c in counts [c1; c2; : : :] do
+		sum <- sum + c
+    
+	emit(term t; count sum)
+						
